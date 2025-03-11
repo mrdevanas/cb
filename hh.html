@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<!-- Coding By Mrdevanas - youtube.com/@mrdevanas -->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title> Chatbot | Mrdevanas</title>
+    <!-- Linking Google Fonts For Icons -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@32,400,0,0" />
+  </head>
+  <body>
+    <div class="container">
+      
+    <header class="app-header">
+      <center>  <h1 class="heading" style="margin-top: 125px;" >What can I help with?
+</h1></center>
+         <h4 class="sub-heading"></h4>
+      </header>
+      <ul class="suggestions">
+       <!--  <li class="suggestions-item">
+          <p class="text">Design a home office setup for remote work under $500.</p>
+          <span class="icon material-symbols-rounded">draw</span>
+        </li>
+        <li class="suggestions-item">
+          <p class="text">How can I level up my web development expertise in 2025?</p>
+          <span class="icon material-symbols-rounded">lightbulb</span>
+        </li>
+        <li class="suggestions-item">
+          <p class="text">Suggest some useful tools for debugging JavaScript code.</p>
+          <span class="icon material-symbols-rounded">explore</span>
+        </li>
+        <li class="suggestions-item">
+          <p class="text">Create a React JS component for the simple todo list app.</p>
+          <span class="icon material-symbols-rounded">code_blocks</span>
+        </li> -->
+      </ul> 
+      <!-- Chats -->
+      <div class="chats-container"></div>
+      <!-- Prompt Input -->
+      <div class="prompt-container">
+        <div class="prompt-wrapper">
+          <form action="#" class="prompt-form">
+            <input type="text" placeholder="Ask AI" class="prompt-input" required />
+            <div class="prompt-actions">
+              <!-- File Upload Wrapper -->
+              <div class="file-upload-wrapper">
+                <img src="#" class="file-preview" />
+                <input id="file-input" type="file" accept="image/*, .pdf, .txt, .csv" hidden />
+                <button type="button" class="file-icon material-symbols-rounded">description</button>
+                <button id="cancel-file-btn" type="button" class="material-symbols-rounded">close</button>
+                <button id="add-file-btn" type="button" class="material-symbols-rounded">attach_file</button>
+              </div>
+              <!-- Send Prompt and Stop Response Buttons -->
+              <button id="stop-response-btn" type="button" class="material-symbols-rounded">stop_circle</button>
+              <button id="send-prompt-btn" class="material-symbols-rounded">arrow_upward</button>
+            </div>
+          </form>
+          <!-- Theme and Delete Chats Buttons -->
+          <button id="theme-toggle-btn" class="material-symbols-rounded">light_mode</button>
+          <button id="delete-chats-btn" class="material-symbols-rounded">delete</button>
+        </div>
+        <p class="disclaimer-text"> This App Was Created By | Mrdevanas</p>
+      </div>
+    </div>
+  </body>
+</html>
+<style>
+    @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+:root {
+  /* Dark theme colors */
+  --text-color: #edf3ff;
+  --subheading-color: #97a7ca;
+  --placeholder-color: #c3cdde;
+  --primary-color: #101623;
+  --secondary-color: #283045;
+  --secondary-hover-color: #333e58;
+  --scrollbar-color: #626a7f;
+}
+body.light-theme {
+  /* Light theme colors */
+  --text-color: #090c13;
+  --subheading-color: #7b8cae;
+  --placeholder-color: #606982;
+  --primary-color: #f3f7ff;
+  --secondary-color: #dce6f9;
+  --secondary-hover-color: #d2ddf2;
+  --scrollbar-color: #a2aac2;
+}
+body {
+  color: var(--text-color);
+  background: var(--primary-color);
+}
+.container {
+  overflow-y: auto;
+  padding: 32px 0 60px;
+  height: calc(100vh - 127px);
+  scrollbar-color: var(--scrollbar-color) transparent;
+}
+.container :where(.app-header, .suggestions, .message, .prompt-wrapper) {
+  position: relative;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 20px;
+  max-width: 990px;
+}
+.container .app-header {
+  margin-top: 3vh;
+}
+.app-header .heading {
+  width: fit-content;
+  font-size: 3rem;
+  background: linear-gradient(to right, #1d7efd, #8f6fff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.app-header .sub-heading {
+  font-size: 2.6rem;
+  margin-top: -5px;
+  color: var(--subheading-color);
+}
+.container .suggestions {
+  width: 100%;
+  list-style: none;
+  display: flex;
+  gap: 15px;
+  margin-top: 9.5vh;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+body.chats-active .container :where(.app-header, .suggestions) {
+  display: none;
+}
+.suggestions .suggestions-item {
+  cursor: pointer;
+  padding: 18px;
+  width: 228px;
+  flex-shrink: 0;
+  display: flex;
+  scroll-snap-align: center;
+  flex-direction: column;
+  align-items: flex-end;
+  border-radius: 12px;
+  justify-content: space-between;
+  background: var(--secondary-color);
+  transition: 0.3s ease;
+}
+.suggestions .suggestions-item:hover {
+  background: var(--secondary-hover-color);
+}
+.suggestions .suggestions-item .text {
+  font-size: 1.1rem;
+}
+.suggestions .suggestions-item .icon {
+  width: 45px;
+  height: 45px;
+  display: flex;
+  font-size: 1.4rem;
+  margin-top: 35px;
+  align-self: flex-end;
+  align-items: center;
+  border-radius: 50%;
+  justify-content: center;
+  color: #1d7efd;
+  background: var(--primary-color);
+}
+.suggestions .suggestions-item:nth-child(2) .icon {
+  color: #28a745;
+}
+.suggestions .suggestions-item:nth-child(3) .icon {
+  color: #ffc107;
+}
+.suggestions .suggestions-item:nth-child(4) .icon {
+  color: #6f42c1;
+}
+.container .chats-container {
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+}
+.chats-container .message {
+  display: flex;
+  gap: 11px;
+  align-items: center;
+}
+.chats-container .message .avatar {
+  width: 43px;
+  height: 43px;
+  flex-shrink: 0;
+  align-self: flex-start;
+  border-radius: 50%;
+  padding: 6px;
+  margin-right: -7px;
+  background: var(--secondary-color);
+  border: 1px solid var(--secondary-hover-color);
+}
+.chats-container .message.loading .avatar {
+  animation: rotate 3s linear infinite;
+}
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.chats-container .message .message-text {
+  padding: 3px 16px;
+  word-wrap: break-word;
+  white-space: pre-line;
+}
+.chats-container .bot-message {
+  margin: 9px auto;
+}
+.chats-container .user-message {
+  flex-direction: column;
+  align-items: flex-end;
+}
+.chats-container .user-message .message-text {
+  padding: 12px 16px;
+  max-width: 75%;
+  background: var(--secondary-color);
+  border-radius: 13px 13px 3px 13px;
+}
+.chats-container .user-message .img-attachment {
+  margin-top: -7px;
+  width: 50%;
+  border-radius: 13px 3px 13px 13px;
+}
+.chats-container .user-message .file-attachment {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  padding: 10px;
+  margin-top: -7px;
+  border-radius: 13px 3px 13px 13px;
+  background: var(--secondary-color);
+}
+.chats-container .user-message .file-attachment span {
+  color: #1d7efd;
+}
+.container .prompt-container {
+  position: fixed;
+  width: 100%;
+  left: 0;
+  bottom: 0;
+  padding: 16px 0;
+  background: var(--primary-color);
+}
+.prompt-container :where(.prompt-wrapper, .prompt-form, .prompt-actions) {
+  display: flex;
+  gap: 12px;
+  height: 56px;
+  align-items: center;
+}
+.prompt-container .prompt-form {
+  height: 100%;
+  width: 100%;
+  border-radius: 130px;
+  background: var(--secondary-color);
+}
+.prompt-form .prompt-input {
+  width: 100%;
+  height: 100%;
+  background: none;
+  outline: none;
+  border: none;
+  font-size: 1rem;
+  color: var(--text-color);
+  padding-left: 24px;
+}
+.prompt-form .prompt-input::placeholder {
+  color: var(--placeholder-color);
+}
+.prompt-wrapper button {
+  width: 56px;
+  height: 100%;
+  flex-shrink: 0;
+  cursor: pointer;
+  border-radius: 50%;
+  font-size: 1.4rem;
+  border: none;
+  color: var(--text-color);
+  background: var(--secondary-color);
+  transition: 0.3s ease;
+}
+.prompt-wrapper :is(button:hover, #cancel-file-btn, .file-icon) {
+  background: var(--secondary-hover-color);
+}
+.prompt-form .prompt-actions {
+  gap: 5px;
+  margin-right: 7px;
+}
+.prompt-wrapper .prompt-form :where(.file-upload-wrapper, button, img) {
+  position: relative;
+  height: 45px;
+  width: 45px;
+}
+.prompt-form .prompt-actions #send-prompt-btn {
+  color: #fff;
+  display: none;
+  background: #1d7efd;
+}
+.prompt-form .prompt-input:valid~.prompt-actions #send-prompt-btn {
+  display: block;
+}
+.prompt-form #send-prompt-btn:hover {
+  background: #0264e3;
+}
+.prompt-form .file-upload-wrapper :where(button, img) {
+  display: none;
+  border-radius: 50%;
+  object-fit: cover;
+  position: absolute;
+}
+.prompt-form .file-upload-wrapper.active #add-file-btn {
+  display: none;
+}
+.prompt-form .file-upload-wrapper #add-file-btn,
+.prompt-form .file-upload-wrapper.active.img-attached img,
+.prompt-form .file-upload-wrapper.active.file-attached .file-icon,
+.prompt-form .file-upload-wrapper.active:hover #cancel-file-btn {
+  display: block;
+}
+.prompt-form :is(#stop-response-btn:hover, #cancel-file-btn) {
+  color: #d62939;
+}
+.prompt-wrapper .prompt-form .file-icon {
+  color: #1d7efd;
+}
+.prompt-form #stop-response-btn,
+body.bot-responding .prompt-form .file-upload-wrapper {
+  display: none;
+}
+body.bot-responding .prompt-form #stop-response-btn {
+  display: block;
+}
+.prompt-container .disclaimer-text {
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 16px 20px 0;
+  color: var(--placeholder-color);
+}
+/* Responsive media query code for small screens */
+@media (max-width: 768px) {
+  .container {
+    padding: 20px 0 100px;
+  }
+  .app-header :is(.heading, .sub-heading) {
+    font-size: 2rem;
+    line-height: 1.4;
+  }
+  .app-header .sub-heading {
+    font-size: 1.7rem;
+  }
+  .container .chats-container {
+    gap: 15px;
+  }
+  .chats-container .bot-message {
+    margin: 4px auto;
+  }
+  .prompt-container :where(.prompt-wrapper, .prompt-form, .prompt-actions) {
+    gap: 8px;
+    height: 53px;
+  }
+  .prompt-container button {
+    width: 53px;
+  }
+  .prompt-form :is(.file-upload-wrapper, button, img) {
+    height: 42px;
+    width: 42px;
+  }
+  .prompt-form .prompt-input {
+    padding-left: 20px;
+  }
+  .prompt-form .file-upload-wrapper.active #cancel-file-btn {
+    opacity: 0;
+  }
+  .prompt-wrapper.hide-controls :where(#theme-toggle-btn, #delete-chats-btn) {
+    display: none;
+  }
+}
+</style>
+<script>
+   const _0x23f420=_0x221e;function _0x221e(_0x1b02d8,_0x2474e3){const _0x204286=_0x2042();return _0x221e=function(_0x221e37,_0x22dce4){_0x221e37=_0x221e37-0x1f0;let _0x3071ed=_0x204286[_0x221e37];return _0x3071ed;},_0x221e(_0x1b02d8,_0x2474e3);}(function(_0x57b5ce,_0x2769e7){const _0x59bc54=_0x221e,_0x5d6004=_0x57b5ce();while(!![]){try{const _0x1e2350=-parseInt(_0x59bc54(0x1fd))/0x1+parseInt(_0x59bc54(0x222))/0x2+parseInt(_0x59bc54(0x24b))/0x3+-parseInt(_0x59bc54(0x249))/0x4*(parseInt(_0x59bc54(0x24a))/0x5)+parseInt(_0x59bc54(0x207))/0x6*(-parseInt(_0x59bc54(0x241))/0x7)+parseInt(_0x59bc54(0x226))/0x8*(parseInt(_0x59bc54(0x21f))/0x9)+parseInt(_0x59bc54(0x219))/0xa;if(_0x1e2350===_0x2769e7)break;else _0x5d6004['push'](_0x5d6004['shift']());}catch(_0x52b731){_0x5d6004['push'](_0x5d6004['shift']());}}}(_0x2042,0xc8b84));const container=document[_0x23f420(0x238)](_0x23f420(0x21c)),chatsContainer=document[_0x23f420(0x238)](_0x23f420(0x245)),promptForm=document['querySelector'](_0x23f420(0x225)),promptInput=promptForm[_0x23f420(0x238)](_0x23f420(0x23d)),fileInput=promptForm['querySelector'](_0x23f420(0x1f5)),fileUploadWrapper=promptForm[_0x23f420(0x238)](_0x23f420(0x1f3)),themeToggleBtn=document[_0x23f420(0x238)]('#theme-toggle-btn'),API_KEY=_0x23f420(0x201),API_URL='https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+API_KEY;let controller,typingInterval;const chatHistory=[],userData={'message':'','file':{}},isLightTheme=localStorage['getItem'](_0x23f420(0x244))==='light_mode';function _0x2042(){const _0x3c33cb=['mime_type','add','querySelector','name','content','color','abort','.prompt-input','.text','<p\x20class=\x22file-attachment\x22><span\x20class=\x22material-symbols-rounded\x22>description</span>','fileName','57253Xpeicd','div','loading','themeColor','.chats-container','active','json','remove','44HChydk','570215qQICoY','834642lIfzGP','model','stop-response-btn','trim','prompt-input','.bot-message.loading','click','\x0a\x20\x20','dispatchEvent','chats-active','#add-file-btn','.file-upload-wrapper','value','#file-input','submit','replace','#delete-chats-btn','type','classList','appendChild','img-attached','561448vHWYOb','onload','#cancel-file-btn','style','AIzaSyBRlTwUa1bFSqLCfcen3o3dKyL7VKYVAWM','bot-message','light_mode','light-theme','#stop-response-btn','AbortError','246SHIiqe','preventDefault','contains','parts','result','hide-controls','toggle',';base64,','.prompt-wrapper','file','<img\x20class=\x22avatar\x22\x20id=\x22bott\x22\x20src=\x22https://liu.se/dfsmedia/dd35e243dfb7406993c1815aaf88a675/76528-50065/ai-genererad-bild-av-sara-laathen-till-ai-sidornas-toppbild?as=1&w=640&h=360&cr=1&crw=640&crh=360&bc=%23ffffff\x22\x20/>\x20<p\x20class=\x22message-text\x22>Typing...</p>','target','text','POST','length','.file-preview','add-file-btn','startsWith','9739170xbYAOk','textContent','application/json','.container','message','file-attached','154458EmBXnB','image/','bot-responding','2859046fbCSEe','createElement','smooth','.prompt-form','136NugwXw','.message-text','<img\x20src=\x22data:','scrollTo','dark_mode','stringify','candidates','signal','Response\x20generation\x20stopped.','scrollHeight','innerHTML','body','change','addEventListener','push','split'];_0x2042=function(){return _0x3c33cb;};return _0x2042();}document[_0x23f420(0x231)]['classList'][_0x23f420(0x20d)](_0x23f420(0x204),isLightTheme),themeToggleBtn[_0x23f420(0x21a)]=isLightTheme?_0x23f420(0x22a):_0x23f420(0x203);const createMessageElement=(_0x2e0322,..._0x10f9ac)=>{const _0x5e735b=_0x23f420,_0x3d2b76=document[_0x5e735b(0x223)](_0x5e735b(0x242));return _0x3d2b76[_0x5e735b(0x1fa)][_0x5e735b(0x237)](_0x5e735b(0x21d),..._0x10f9ac),_0x3d2b76[_0x5e735b(0x230)]=_0x2e0322,_0x3d2b76;},scrollToBottom=()=>container[_0x23f420(0x229)]({'top':container[_0x23f420(0x22f)],'behavior':_0x23f420(0x224)}),typingEffect=(_0xcf3e57,_0x3cee81,_0x133f22)=>{const _0x12f9b8=_0x23f420;_0x3cee81[_0x12f9b8(0x21a)]='';const _0x3be4bc=_0xcf3e57[_0x12f9b8(0x235)]('\x20');let _0x3bd775=0x0;typingInterval=setInterval(()=>{const _0x464435=_0x12f9b8;_0x3bd775<_0x3be4bc[_0x464435(0x215)]?(_0x3cee81[_0x464435(0x21a)]+=(_0x3bd775===0x0?'':'\x20')+_0x3be4bc[_0x3bd775++],scrollToBottom()):(clearInterval(typingInterval),_0x133f22['classList'][_0x464435(0x248)](_0x464435(0x243)),document[_0x464435(0x231)]['classList']['remove'](_0x464435(0x221)));},0x28);},generateResponse=async _0x45bafe=>{const _0x3f9263=_0x23f420,_0x1d92da=_0x45bafe[_0x3f9263(0x238)]('.message-text');controller=new AbortController(),chatHistory[_0x3f9263(0x234)]({'role':'user','parts':[{'text':userData[_0x3f9263(0x21d)]},...userData[_0x3f9263(0x210)]['data']?[{'inline_data':(({fileName:_0x8dfbb1,isImage:_0x31fbf2,..._0x350a9c})=>_0x350a9c)(userData[_0x3f9263(0x210)])}]:[]]});try{const _0x2ac7a1=await fetch(API_URL,{'method':_0x3f9263(0x214),'headers':{'Content-Type':_0x3f9263(0x21b)},'body':JSON[_0x3f9263(0x22b)]({'contents':chatHistory}),'signal':controller[_0x3f9263(0x22d)]}),_0x5f5949=await _0x2ac7a1[_0x3f9263(0x247)]();if(!_0x2ac7a1['ok'])throw new Error(_0x5f5949['error'][_0x3f9263(0x21d)]);const _0x5c96f8=_0x5f5949[_0x3f9263(0x22c)][0x0][_0x3f9263(0x23a)][_0x3f9263(0x20a)][0x0][_0x3f9263(0x213)][_0x3f9263(0x1f7)](/\*\*([^*]+)\*\*/g,'$1')[_0x3f9263(0x24e)]();typingEffect(_0x5c96f8,_0x1d92da,_0x45bafe),chatHistory[_0x3f9263(0x234)]({'role':_0x3f9263(0x24c),'parts':[{'text':_0x5c96f8}]});}catch(_0xbd7c3b){_0x1d92da[_0x3f9263(0x21a)]=_0xbd7c3b['name']===_0x3f9263(0x206)?_0x3f9263(0x22e):_0xbd7c3b[_0x3f9263(0x21d)],_0x1d92da[_0x3f9263(0x200)][_0x3f9263(0x23b)]='#d62939',_0x45bafe[_0x3f9263(0x1fa)][_0x3f9263(0x248)]('loading'),document[_0x3f9263(0x231)][_0x3f9263(0x1fa)][_0x3f9263(0x248)](_0x3f9263(0x221)),scrollToBottom();}finally{userData['file']={};}},handleFormSubmit=_0x468924=>{const _0x4d61ef=_0x23f420;_0x468924[_0x4d61ef(0x208)]();const _0x1f1758=promptInput['value'][_0x4d61ef(0x24e)]();if(!_0x1f1758||document[_0x4d61ef(0x231)]['classList']['contains'](_0x4d61ef(0x221)))return;userData[_0x4d61ef(0x21d)]=_0x1f1758,promptInput[_0x4d61ef(0x1f4)]='',document[_0x4d61ef(0x231)][_0x4d61ef(0x1fa)][_0x4d61ef(0x237)]('chats-active',_0x4d61ef(0x221)),fileUploadWrapper[_0x4d61ef(0x1fa)][_0x4d61ef(0x248)](_0x4d61ef(0x21e),_0x4d61ef(0x1fc),_0x4d61ef(0x246));const _0x36f368='\x0a\x20\x20\x20\x20<p\x20class=\x22message-text\x22></p>\x0a\x20\x20\x20\x20'+(userData['file']['data']?userData[_0x4d61ef(0x210)]['isImage']?_0x4d61ef(0x228)+userData[_0x4d61ef(0x210)][_0x4d61ef(0x236)]+_0x4d61ef(0x20e)+userData['file']['data']+'\x22\x20class=\x22img-attachment\x22\x20/>':_0x4d61ef(0x23f)+userData[_0x4d61ef(0x210)][_0x4d61ef(0x240)]+'</p>':'')+_0x4d61ef(0x252),_0x2c9542=createMessageElement(_0x36f368,'user-message');_0x2c9542[_0x4d61ef(0x238)](_0x4d61ef(0x227))['textContent']=userData[_0x4d61ef(0x21d)],chatsContainer[_0x4d61ef(0x1fb)](_0x2c9542),scrollToBottom(),setTimeout(()=>{const _0x1033f6=_0x4d61ef,_0x277887=_0x1033f6(0x211),_0x56ddca=createMessageElement(_0x277887,_0x1033f6(0x202),_0x1033f6(0x243));chatsContainer[_0x1033f6(0x1fb)](_0x56ddca),scrollToBottom(),generateResponse(_0x56ddca);},0x258);};fileInput[_0x23f420(0x233)](_0x23f420(0x232),()=>{const _0x31ae36=_0x23f420,_0x51dcdd=fileInput['files'][0x0];if(!_0x51dcdd)return;const _0x8f2748=_0x51dcdd[_0x31ae36(0x1f9)][_0x31ae36(0x218)](_0x31ae36(0x220)),_0x36aa42=new FileReader();_0x36aa42['readAsDataURL'](_0x51dcdd),_0x36aa42[_0x31ae36(0x1fe)]=_0x29e991=>{const _0x30d785=_0x31ae36;fileInput[_0x30d785(0x1f4)]='';const _0x30a1d9=_0x29e991[_0x30d785(0x212)][_0x30d785(0x20b)]['split'](',')[0x1];fileUploadWrapper[_0x30d785(0x238)](_0x30d785(0x216))['src']=_0x29e991[_0x30d785(0x212)]['result'],fileUploadWrapper[_0x30d785(0x1fa)][_0x30d785(0x237)](_0x30d785(0x246),_0x8f2748?_0x30d785(0x1fc):_0x30d785(0x21e)),userData['file']={'fileName':_0x51dcdd[_0x30d785(0x239)],'data':_0x30a1d9,'mime_type':_0x51dcdd[_0x30d785(0x1f9)],'isImage':_0x8f2748};};}),document[_0x23f420(0x238)](_0x23f420(0x1ff))[_0x23f420(0x233)](_0x23f420(0x251),()=>{const _0x25afc2=_0x23f420;userData[_0x25afc2(0x210)]={},fileUploadWrapper[_0x25afc2(0x1fa)][_0x25afc2(0x248)](_0x25afc2(0x21e),_0x25afc2(0x1fc),'active');}),document['querySelector'](_0x23f420(0x205))[_0x23f420(0x233)](_0x23f420(0x251),()=>{const _0x3a9406=_0x23f420;controller?.[_0x3a9406(0x23c)](),userData[_0x3a9406(0x210)]={},clearInterval(typingInterval),chatsContainer[_0x3a9406(0x238)](_0x3a9406(0x250))[_0x3a9406(0x1fa)][_0x3a9406(0x248)](_0x3a9406(0x243)),document[_0x3a9406(0x231)][_0x3a9406(0x1fa)]['remove']('bot-responding');}),themeToggleBtn[_0x23f420(0x233)](_0x23f420(0x251),()=>{const _0x19f556=_0x23f420,_0x47b115=document['body']['classList'][_0x19f556(0x20d)](_0x19f556(0x204));localStorage['setItem'](_0x19f556(0x244),_0x47b115?_0x19f556(0x203):_0x19f556(0x22a)),themeToggleBtn[_0x19f556(0x21a)]=_0x47b115?_0x19f556(0x22a):_0x19f556(0x203);}),document['querySelector'](_0x23f420(0x1f8))['addEventListener'](_0x23f420(0x251),()=>{const _0x32de8d=_0x23f420;chatHistory[_0x32de8d(0x215)]=0x0,chatsContainer[_0x32de8d(0x230)]='',document[_0x32de8d(0x231)][_0x32de8d(0x1fa)]['remove'](_0x32de8d(0x1f1),'bot-responding');}),document['querySelectorAll']('.suggestions-item')['forEach'](_0x1b3e20=>{_0x1b3e20['addEventListener']('click',()=>{const _0x4a4395=_0x221e;promptInput['value']=_0x1b3e20[_0x4a4395(0x238)](_0x4a4395(0x23e))[_0x4a4395(0x21a)],promptForm[_0x4a4395(0x1f0)](new Event(_0x4a4395(0x1f6)));});}),document[_0x23f420(0x233)](_0x23f420(0x251),({target:_0x27f27e})=>{const _0x2ddc02=_0x23f420,_0x23fd9b=document['querySelector'](_0x2ddc02(0x20f)),_0x1871f8=_0x27f27e[_0x2ddc02(0x1fa)][_0x2ddc02(0x209)](_0x2ddc02(0x24f))||_0x23fd9b[_0x2ddc02(0x1fa)]['contains'](_0x2ddc02(0x20c))&&(_0x27f27e['id']===_0x2ddc02(0x217)||_0x27f27e['id']===_0x2ddc02(0x24d));_0x23fd9b['classList'][_0x2ddc02(0x20d)](_0x2ddc02(0x20c),_0x1871f8);}),promptForm[_0x23f420(0x233)](_0x23f420(0x1f6),handleFormSubmit),promptForm[_0x23f420(0x238)](_0x23f420(0x1f2))[_0x23f420(0x233)](_0x23f420(0x251),()=>fileInput[_0x23f420(0x251)]());
+</script>
